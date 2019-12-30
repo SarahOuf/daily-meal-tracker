@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-md-5"></div>
+        <div class="card bg-light form-style">
+          <div class="card-body">
+            <form action="/register" method="post" id="registerForm" class="needs-validation" novalidate>
+                <div class="form-group">
+                    <input autocomplete="off" class="form-control" name="email" id="email" placeholder="Email" type="email" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid email
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input autocomplete="off" class="form-control" name="username" id="username" placeholder="Username" type="text" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid username
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" name="password" id="password" placeholder="Password" type="password" required>
+                    <div class="invalid-feedback">
+                        Please enter a password
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" name="password_confirm" id="password_confirm" placeholder="Confrim Password" type="password" required>
+                    <div class="invalid-feedback" id="inavlid_pass">
+                        Please make sure your passwords match
+                    </div>
+                </div>
+                <button class="btn btn-secondary" type="submit">Create Account</button>
+            </form>
+          </div>
+        </div>
+    </div>
+{% endblock %}

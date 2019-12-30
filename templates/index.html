@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+
+    <div class="form-row title">
+        <div class="col-md-12">
+            <h1 class="index-font">Your stop for meal tracking.</h1>
+        </div>
+    </div>
+    <form action="/" method="post" class="search-form">
+        <div class="form-row">
+            <div class="col-md-2"></div>
+            <div class="form-group col-md-6">
+                <input type="text" class="form-control form-control-lg" id="search-field" name="search-field" placeholder="Enter food">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-light btn-block btn-lg">Search</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

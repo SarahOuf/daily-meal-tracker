@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search Results
+{% endblock %}
+
+{% block main %}
+
+    <div class="bg-light div-style">
+        <form action="/" method="post" class="search-form">
+            <br>
+            <div class="form-row">
+                <div class="col-md-2"></div>
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control form-control-lg" id="search-field" name="search-field" placeholder="Enter food">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-dark btn-block btn-lg">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="bg-light table-style div-style">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <h1 style="color: black; text-align: center;"><strong>Search results for "{{foodname}}"</strong></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <table class="table table-hover table-responsive-md bg-light">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Food Name</th>
+                            <th scope="col">Energy</th>
+                            <th scope="col">Nutrients</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for food in foods %}
+                            <tr>
+                                <th scope="row">{{ loop.index }}</th>
+                                <td>
+                                    <a href="/food-display?food={{food['food']['foodId']}}">{{ food['food']['label'] }}</a>
+                                    <br>
+                                    <p class="text-muted small">{{food['food']['brand']}}</p>
+                                </td>
+                                <td>{{ "%.0f"|format(food['food']['nutrients']['ENERC_KCAL']|float) }}</td>
+                                <td>
+                                    {% if food['food']['nutrients']['PROCNT'] %}
+                                        Protein: {{ "%.1f"|format(food['food']['nutrients']['PROCNT']|float)}}
+                                    {% endif %}
+                                    <br>
+                                    {% if food['food']['nutrients']['FAT'] %}
+                                        Fat: {{ "%.1f"|format(food['food']['nutrients']['FAT']|float) }}
+                                    {% endif %}
+                                    <br>
+                                    {% if food['food']['nutrients']['CHOCDF'] %}
+                                        Carbs: {{ "%.1f"|format(food['food']['nutrients']['CHOCDF']|float) }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <nav aria-label="Search page navigation">
+          <ul class="pagination justify-content-center">
+            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a></li>
+            <li class="page-item"><a class="page-link" href={{nextlink}}>Next</a></li>
+          </ul>
+        </nav>
+    </div>
+
+{% endblock %}

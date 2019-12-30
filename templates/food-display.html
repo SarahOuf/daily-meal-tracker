@@ -1,0 +1,201 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{food['food']['label']}} Page
+{% endblock %}
+
+{% block main %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="card food-style col-md-6">
+            <div class="card-body">
+                <h2 style="text-align:center;">{{food['food']['label']}}</h2>
+                <h3 style="text-align:center;">{{food['food']['brand']}}</h3>
+                <hr>
+                <p style="display: none;" id="foodid">{{food['food']['foodId']}}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><label>Serving amount: </label></h5>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" name="serving_amount" id="serving_amount" value=1 class="form-control" onchange="changeFunction();">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><label>Serving size: </label></h5>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="custom-select" id="selectbox" onchange="changeFunction();">
+                            <option selected disabled>choose a serving size</option>
+                            {% for measure in food['measures'] %}
+                                {% if measure['qualified'] %}
+                                    {% for qualify in measure['qualified'] %}
+                                        <option id="measure-id" value="{{measure['uri']}},{{qualify[0]['uri']}}">{{measure['label']}}: {{qualify[0]['label']}}</option>
+                                    {% endfor %}
+                                {% else %}
+                                    <option id="measure-id" value="{{measure['uri']}}">{{measure['label']}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label id='carbs'>Carbs: </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label id="calories">Calories: </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label id="weight">Weight: </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label id="fat">Fat: </label>
+                    </div>
+                    <div class="col-md-2">
+                        <label id="protein">protein: </label>
+                    </div>
+                </div>
+                <br>
+                {% if session.user_id %}
+                    <button type="button" data-toggle="modal" data-target="#foodModal" class="btn btn-primary">Add Food</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="foodModal" tabindex="-1" role="dialog" aria-labelledby="foodModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalTitle">Foodie</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/addfood" method="post" class="needs-validation" novalidate>
+                        <div class="form-group row">
+                            <label for="foodname" class="col-md-4 col-form-label">Food name: </label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" id="foodname" name="foodname" readonly="readonly" value="{{food['food']['label']}}">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="servingamount" class="col-md-4 col-form-label">Serving amount: </label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" id="servingamount" name="servingamount" readonly="readonly" value="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="servingsize" class="col-md-4 col-form-label">Serving size: </label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" id="servingsize" name="servingsize" readonly="readonly" value="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="caloriesmodal" class="col-md-4 col-form-label">Calories: </label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control" id="caloriesmodal" name="caloriesmodal" readonly="readonly" value="">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="datepicker" class="col-md-4 col-form-label">Date: </label>
+                            <div class="col-md-5">
+                                <input class="bg-light" id="datepicker" name="datepicker" width="276">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="categoryselect" class="col-md-4 col-form-label">Add food for: </label>
+                            <div class="col-md-5">
+                                <select id="categoryselect" name="categoryselect" class="custom-select form-control" required>
+                                    <option selected disabled>Choose a category</option>
+                                    <option value="breakfast">Breakfast</option>
+                                    <option value="lunch">Lunch</option>
+                                    <option value="dinner">Dinner</option>
+                                    <option value="snacks">Snacks</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please choose a meal category
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="foodid" id="foodid" value="{{food['food']['foodId']}}">
+                        <button type="submit" class="btn btn-primary">Add food</button>
+                    </form>
+                </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        $('#datepicker').datepicker({
+            uiLibrary: 'bootstrap4'
+        });
+        $
+        window.onload = loadDate;
+        function loadDate(){
+            var today = new Date();
+            var todayDate = (today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear();
+            document.querySelector("#datepicker").value = todayDate;
+        }
+
+        var calories = 0;
+        function changeFunction() {
+            var foodid = document.getElementById("foodid").innerHTML;
+            var selectBox = document.getElementById("selectbox");
+            var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+            var quantity = document.querySelector("#serving_amount").value;
+            var split = selectedValue.split(",");
+            $.get('/getNutrients', {measureuri: split[0], qualifyuri: split[1], foodid: foodid, quantity: quantity}, function(data){
+               document.getElementById("carbs").innerHTML = "Carbs: <p>" + data['carbs'] + "</p>";
+               document.getElementById("calories").innerHTML = "Calories: <p>" + data['calories'] + "</p>";
+               document.getElementById("weight").innerHTML = "Weight: <p>" + data['weight'] + "</p>";
+               document.getElementById("fat").innerHTML = "Fat: <p>" + data['fat'] + "</p>";
+               document.getElementById("protein").innerHTML = "Protein: <p>" + data['protein'] + "</p>";
+               calories = data['calories'];
+            });
+        }
+
+        // $('#foodModal').on('shown.bs.modal', function() {
+        //     var selectBox = document.getElementById("selectbox");
+        //     document.querySelector("#servingamount").value = document.querySelector("#serving_amount").value;
+        //     document.querySelector("#servingsize").value = selectBox.options[selectBox.selectedIndex].innerHTML;
+        //     document.querySelector("#caloriesmodal").value = calories;
+        // });
+
+        (function() {
+          'use strict';
+          window.addEventListener('load', function() {
+            $('#foodModal').on('shown.bs.modal', function() {
+                var selectBox = document.getElementById("selectbox");
+                document.querySelector("#servingamount").value = document.querySelector("#serving_amount").value;
+                document.querySelector("#servingsize").value = selectBox.options[selectBox.selectedIndex].innerHTML;
+                document.querySelector("#caloriesmodal").value = calories;
+            });
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+              form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+              }, false);
+            });
+          }, false);
+        })();
+
+    </script>
+
+{% endblock %}
