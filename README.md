@@ -12,6 +12,7 @@ overview: The goal of the project was to build a website which is an online meal
           for each food.
 
 Functions:
+
     1- Searching: The website allows users to search for food names, see the different results and view
                   the nutritional information for each item without the need of registration but they
                   won't be able to add the food to their daily dairy or count their calories.
@@ -24,6 +25,7 @@ Functions:
                   have added to each meal and the amount of calories for the day and for each meal.
 
 Database:
+
     1- users: The first table in the database which contains the user information that include: user_id,
               username, email, password_hash.
 
